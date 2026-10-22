@@ -40,6 +40,41 @@ func revenueChart(w http.ResponseWriter, r *http.Request) {
 	templ.Handler(pages.RevenueChart(pages.RandomRevenue())).ServeHTTP(w, r)
 }
 
+// deploymentsFragment renders the deployment history filtered by ?env=.
+func deploymentsFragment(w http.ResponseWriter, r *http.Request) {
+	templ.Handler(pages.DeployHistoryTable(pages.FilterHistory(r.URL.Query().Get("env"), ""))).ServeHTTP(w, r)
+}
+
+func projectDetail(w http.ResponseWriter, r *http.Request) {
+	p, ok := pages.FindProject(r.PathValue("slug"))
+	if !ok {
+		http.NotFound(w, r)
+		return
+	}
+	templ.Handler(pages.ProjectDetail(p)).ServeHTTP(w, r)
+}
+
+// promoteProject is a mock: it only renders a confirmation fragment.
+func promoteProject(w http.ResponseWriter, r *http.Request) {
+	p, ok := pages.FindProject(r.PathValue("slug"))
+	from := r.URL.Query().Get("from")
+	if !ok || from == "" {
+		http.Error(w, "unknown project or environment", http.StatusBadRequest)
+		return
+	}
+	to := ""
+	for i, env := range pages.Environments {
+		if env == from && i+1 < len(pages.Environments) {
+			to = pages.Environments[i+1]
+		}
+	}
+	if to == "" {
+		http.Error(w, "nothing to promote to", http.StatusBadRequest)
+		return
+	}
+	templ.Handler(pages.PromoteResult(p.Name, from, to, p.Deployments[from].Version)).ServeHTTP(w, r)
+}
+
 func main() {
 	mux := http.NewServeMux()
 	setupAssetsRoutes(mux)
@@ -54,6 +89,10 @@ func main() {
 	mux.Handle("GET /charts", templ.Handler(pages.Charts()))
 	mux.Handle("GET /analytics", templ.Handler(pages.Analytics()))
 	mux.HandleFunc("GET /analytics/revenue", revenueChart)
+	mux.Handle("GET /projects", templ.Handler(pages.Projects()))
+	mux.HandleFunc("GET /projects/deployments", deploymentsFragment)
+	mux.HandleFunc("GET /projects/{slug}", projectDetail)
+	mux.HandleFunc("POST /projects/{slug}/promote", promoteProject)
 
 	ln, err := listen()
 	if err != nil {

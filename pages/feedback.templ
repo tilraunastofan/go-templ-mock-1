@@ -63,11 +63,7 @@ templ Feedback() {
 			}
 			@card.Content() {
 				<div class="space-y-4">
-					@progress.Progress(progress.Props{Value: 60}) {
-						@progress.Track() {
-							@progress.Indicator()
-						}
-					}
+					@progress.Progress(progress.Props{Value: 60})
 					<div class="flex items-center gap-4">
 						@skeleton.Skeleton(skeleton.Props{Class: "size-12 rounded-full"})
 						<div class="space-y-2">

@@ -1,0 +1,198 @@
+package pages
+
+import (
+	"fmt"
+
+	"go-templ-mock-1/components/alert"
+	"go-templ-mock-1/components/badge"
+	"go-templ-mock-1/components/button"
+	"go-templ-mock-1/components/card"
+	"go-templ-mock-1/components/progress"
+	"go-templ-mock-1/components/table"
+	"go-templ-mock-1/layouts"
+)
+
+templ ProjectDetail(p Project) {
+	@layouts.Shell(p.Name, "/projects") {
+		<div class="flex flex-wrap items-center justify-between gap-2">
+			<div>
+				<a href="/projects" class="text-sm text-muted-foreground hover:underline">← All projects</a>
+				<h1 class="text-2xl font-semibold">{ p.Name }</h1>
+				<p class="text-sm text-muted-foreground">{ p.Team } · { p.Language } · <span class="font-mono">{ p.Image }</span></p>
+			</div>
+		</div>
+		<div id="promote-result"></div>
+		<div class="grid gap-4 md:grid-cols-3">
+			for i, env := range Environments {
+				@envCard(p, env, i)
+			}
+		</div>
+		<div class="grid gap-6 lg:grid-cols-3">
+			@card.Card(card.Props{Class: "lg:col-span-2"}) {
+				@card.Header() {
+					@card.Title() {
+						Image vulnerabilities
+					}
+					@card.Description() {
+						{ fmt.Sprintf("%d findings in %s:%s", p.Vulns.Total(), p.Image, p.Deployments["prod"].Version) }
+					}
+				}
+				@card.Content() {
+					@table.Table() {
+						@table.Header() {
+							@table.Row() {
+								@table.Head() {
+									CVE
+								}
+								@table.Head() {
+									Severity
+								}
+								@table.Head() {
+									Package
+								}
+								@table.Head() {
+									Installed
+								}
+								@table.Head() {
+									Fixed in
+								}
+							}
+						}
+						@table.Body() {
+							for _, c := range projectCVEs(p.Slug) {
+								@table.Row() {
+									@table.Cell(table.CellProps{Class: "font-mono text-xs"}) {
+										{ c.ID }
+									}
+									@table.Cell() {
+										@badge.Badge(badge.Props{Variant: severityVariant(c.Severity)}) {
+											{ c.Severity }
+										}
+									}
+									@table.Cell() {
+										{ c.Package }
+									}
+									@table.Cell(table.CellProps{Class: "font-mono text-xs"}) {
+										{ c.Installed }
+									}
+									@table.Cell(table.CellProps{Class: "font-mono text-xs"}) {
+										{ c.Fixed }
+									}
+								}
+							}
+						}
+					}
+					if len(projectCVEs(p.Slug)) == 0 {
+						<p class="py-6 text-center text-sm text-muted-foreground">No known fixable CVEs listed.</p>
+					}
+				}
+			}
+			@card.Card() {
+				@card.Header() {
+					@card.Title() {
+						Health
+					}
+				}
+				@card.Content() {
+					<div class="space-y-4 text-sm">
+						<div class="space-y-2">
+							<div class="flex justify-between">
+								<span>Test coverage</span>
+								<span>{ fmt.Sprintf("%d%%", p.Coverage) }</span>
+							</div>
+							@progress.Progress(progress.Props{Value: p.Coverage})
+						</div>
+						<div class="flex justify-between">
+							<span>Critical / High</span>
+							<span>{ fmt.Sprintf("%d / %d", p.Vulns.Critical, p.Vulns.High) }</span>
+						</div>
+						<div class="flex justify-between">
+							<span>Errors (24h)</span>
+							<span>{ fmt.Sprint(errorCount(p.Slug)) }</span>
+						</div>
+					</div>
+				}
+			}
+		</div>
+		<div class="grid gap-6 lg:grid-cols-2">
+			@card.Card() {
+				@card.Header() {
+					@card.Title() {
+						Deployment history
+					}
+				}
+				@card.Content() {
+					@DeployHistoryTable(FilterHistory("all", p.Slug))
+				}
+			}
+			@card.Card() {
+				@card.Header() {
+					@card.Title() {
+						Latest errors
+					}
+				}
+				@card.Content() {
+					@ErrorList(projectErrors(p.Slug))
+				}
+			}
+		</div>
+	}
+}
+
+templ envCard(p Project, env string, idx int) {
+	{{ d := p.Deployments[env] }}
+	@card.Card() {
+		@card.Header() {
+			@card.Description() {
+				{ env }
+			}
+			@card.Title(card.TitleProps{Class: "font-mono text-xl"}) {
+				{ d.Version }
+			}
+			@card.Action() {
+				@badge.Badge(badge.Props{Variant: statusVariantFor(d.Status)}) {
+					{ d.Status }
+				}
+			}
+		}
+		@card.Content() {
+			<dl class="grid grid-cols-2 gap-1 text-sm">
+				<dt class="text-muted-foreground">Replicas</dt>
+				<dd>{ d.Replicas }</dd>
+				<dt class="text-muted-foreground">Deployed</dt>
+				<dd>{ d.DeployedAt } by { d.By }</dd>
+				<dt class="text-muted-foreground">Commit</dt>
+				<dd class="font-mono text-xs">{ d.Commit }</dd>
+			</dl>
+		}
+		if idx < len(Environments)-1 {
+			@card.Footer() {
+				@button.Button(button.Props{Size: button.SizeSm, Variant: button.VariantOutline, Attributes: templ.Attributes{
+					"hx-post":   "/projects/" + p.Slug + "/promote?from=" + env,
+					"hx-target": "#promote-result",
+				}}) {
+					Promote to { Environments[idx+1] }
+				}
+			}
+		}
+	}
+}
+
+templ PromoteResult(project, from, to, version string) {
+	@alert.Alert() {
+		@alert.Title() {
+			Promotion queued
+		}
+		@alert.Description() {
+			{ project } { version } is being promoted from { from } to { to }. (Mock: nothing was deployed.)
+		}
+	}
+}
+
+func errorCount(slug string) int {
+	n := 0
+	for _, e := range projectErrors(slug) {
+		n += e.Count
+	}
+	return n
+}

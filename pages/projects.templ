@@ -1,0 +1,285 @@
+package pages
+
+import (
+	"fmt"
+
+	"go-templ-mock-1/components/badge"
+	"go-templ-mock-1/components/button"
+	"go-templ-mock-1/components/card"
+	"go-templ-mock-1/components/chart"
+	"go-templ-mock-1/components/table"
+	"go-templ-mock-1/layouts"
+)
+
+templ Projects() {
+	@layouts.Shell("Projects", "/projects") {
+		<div>
+			<h1 class="text-2xl font-semibold">Projects &amp; deployments</h1>
+			<p class="text-sm text-muted-foreground">Mock platform engineering overview across dev, test and prod.</p>
+		</div>
+		@projectStats()
+		@card.Card() {
+			@card.Header() {
+				@card.Title() {
+					Deployment matrix
+				}
+				@card.Description() {
+					Running version per project and environment.
+				}
+			}
+			@card.Content() {
+				@table.Table() {
+					@table.Header() {
+						@table.Row() {
+							@table.Head() {
+								Project
+							}
+							for _, env := range Environments {
+								@table.Head() {
+									{ env }
+								}
+							}
+							@table.Head() {
+								Vulnerabilities
+							}
+						}
+					}
+					@table.Body() {
+						for _, p := range AllProjects {
+							@table.Row() {
+								@table.Cell() {
+									<a href={ templ.SafeURL("/projects/" + p.Slug) } class="font-medium hover:underline">{ p.Name }</a>
+									<div class="text-xs text-muted-foreground">{ p.Team } · { p.Language }</div>
+								}
+								for _, env := range Environments {
+									@table.Cell() {
+										@envCell(p.Deployments[env])
+									}
+								}
+								@table.Cell() {
+									@vulnBadges(p.Vulns)
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		<div class="grid gap-6 lg:grid-cols-2">
+			@card.Card() {
+				@card.Header() {
+					@card.Title() {
+						Image vulnerabilities
+					}
+					@card.Description() {
+						Findings by severity from the latest image scan.
+					}
+				}
+				@card.Content() {
+					@chart.Container(chart.ContainerProps{ID: "vulns", Config: vulnConfig, Class: "min-h-[260px] w-full"}) {
+						@chart.BarChart(chart.BarChartProps{Data: vulnChartData()}) {
+							@chart.CartesianGrid(chart.CartesianGridProps{Vertical: chart.Bool(false)})
+							@chart.XAxis(chart.XAxisProps{DataKey: "project", TickMargin: 10, TickFormatter: shortName})
+							@chart.Tooltip()
+							@chart.Legend()
+							@chart.Bar(chart.BarProps{DataKey: "critical", StackID: "v", Fill: "var(--color-critical)"})
+							@chart.Bar(chart.BarProps{DataKey: "high", StackID: "v", Fill: "var(--color-high)"})
+							@chart.Bar(chart.BarProps{DataKey: "medium", StackID: "v", Fill: "var(--color-medium)"})
+							@chart.Bar(chart.BarProps{DataKey: "low", StackID: "v", Fill: "var(--color-low)", Radius: []float64{4, 4, 0, 0}})
+						}
+					}
+				}
+			}
+			@card.Card() {
+				@card.Header() {
+					@card.Title() {
+						Deploy frequency
+					}
+					@card.Description() {
+						Deployments per week by environment.
+					}
+				}
+				@card.Content() {
+					@chart.Container(chart.ContainerProps{ID: "freq", Config: deployFreqConfig, Class: "min-h-[260px] w-full"}) {
+						@chart.LineChart(chart.LineChartProps{Data: deployFreqData}) {
+							@chart.CartesianGrid(chart.CartesianGridProps{Vertical: chart.Bool(false)})
+							@chart.XAxis(chart.XAxisProps{DataKey: "week", TickMargin: 10})
+							@chart.Tooltip()
+							@chart.Legend()
+							@chart.Line(chart.LineProps{DataKey: "dev", Type: chart.CurveMonotone, Stroke: "var(--color-dev)", StrokeWidth: 2})
+							@chart.Line(chart.LineProps{DataKey: "test", Type: chart.CurveMonotone, Stroke: "var(--color-test)", StrokeWidth: 2})
+							@chart.Line(chart.LineProps{DataKey: "prod", Type: chart.CurveMonotone, Stroke: "var(--color-prod)", StrokeWidth: 2})
+						}
+					}
+				}
+			}
+		</div>
+		<div class="grid gap-6 lg:grid-cols-5">
+			@card.Card(card.Props{Class: "lg:col-span-3"}) {
+				@card.Header() {
+					@card.Title() {
+						Recent deployments
+					}
+					@card.Description() {
+						Filter by environment; the table is swapped in with HTMX.
+					}
+					@card.Action() {
+						<div class="flex gap-1">
+							for _, env := range append([]string{"all"}, Environments...) {
+								@button.Button(button.Props{Size: button.SizeXs, Variant: button.VariantOutline, Attributes: templ.Attributes{"hx-get": "/projects/deployments?env=" + env, "hx-target": "#deploy-history", "hx-swap": "innerHTML"}}) {
+									{ env }
+								}
+							}
+						</div>
+					}
+				}
+				@card.Content() {
+					<div id="deploy-history">
+						@DeployHistoryTable(FilterHistory("all", ""))
+					</div>
+				}
+			}
+			@card.Card(card.Props{Class: "lg:col-span-2"}) {
+				@card.Header() {
+					@card.Title() {
+						Latest errors
+					}
+					@card.Description() {
+						Grouped by message, last 24 hours.
+					}
+				}
+				@card.Content() {
+					@ErrorList(RecentErrors)
+				}
+			}
+		</div>
+	}
+}
+
+templ projectStats() {
+	<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+		@statCard("Healthy deployments", fmt.Sprintf("%d / %d", countStatus("healthy"), len(AllProjects)*len(Environments)), fmt.Sprintf("%d deploying, %d failed", countStatus("deploying"), countStatus("failed")))
+		@statCard("Critical vulnerabilities", fmt.Sprint(totalVulns().Critical), fmt.Sprintf("%d high across %d projects", totalVulns().High, len(AllProjects)))
+		@statCard("Errors (24h)", fmt.Sprint(totalErrors()), "across all environments")
+		@statCard("Prod deploys (6w)", "51", "median lead time 38m")
+	</div>
+}
+
+templ statCard(label, value, note string) {
+	@card.Card() {
+		@card.Header() {
+			@card.Description() {
+				{ label }
+			}
+			@card.Title(card.TitleProps{Class: "text-2xl"}) {
+				{ value }
+			}
+		}
+		@card.Footer() {
+			<span class="text-xs text-muted-foreground">{ note }</span>
+		}
+	}
+}
+
+templ envCell(d Deployment) {
+	<div class="flex flex-col items-start gap-1">
+		<span class="font-mono text-xs">{ d.Version }</span>
+		@badge.Badge(badge.Props{Variant: statusVariantFor(d.Status)}) {
+			{ d.Status }
+		}
+	</div>
+}
+
+templ vulnBadges(v Vulns) {
+	<div class="flex gap-1">
+		if v.Critical > 0 {
+			@badge.Badge(badge.Props{Variant: badge.VariantDestructive}) {
+				{ fmt.Sprintf("%d crit", v.Critical) }
+			}
+		}
+		@badge.Badge(badge.Props{Variant: badge.VariantSecondary}) {
+			{ fmt.Sprintf("%d high", v.High) }
+		}
+		@badge.Badge(badge.Props{Variant: badge.VariantOutline}) {
+			{ fmt.Sprintf("%d total", v.Total()) }
+		}
+	</div>
+}
+
+// DeployHistoryTable is also the fragment returned by GET /projects/deployments.
+templ DeployHistoryTable(events []DeployEvent) {
+	@table.Table() {
+		@table.Header() {
+			@table.Row() {
+				@table.Head() {
+					Project
+				}
+				@table.Head() {
+					Env
+				}
+				@table.Head() {
+					Version
+				}
+				@table.Head() {
+					Status
+				}
+				@table.Head(table.HeadProps{Class: "text-right"}) {
+					When
+				}
+			}
+		}
+		@table.Body() {
+			for _, e := range events {
+				@table.Row() {
+					@table.Cell(table.CellProps{Class: "font-medium"}) {
+						{ e.Project }
+					}
+					@table.Cell() {
+						{ e.Env }
+					}
+					@table.Cell(table.CellProps{Class: "font-mono text-xs"}) {
+						{ e.Version }
+					}
+					@table.Cell() {
+						@badge.Badge(badge.Props{Variant: statusVariantFor(e.Status)}) {
+							{ e.Status }
+						}
+					}
+					@table.Cell(table.CellProps{Class: "text-right text-muted-foreground"}) {
+						{ e.When }
+					}
+				}
+			}
+		}
+	}
+	if len(events) == 0 {
+		<p class="py-6 text-center text-sm text-muted-foreground">No deployments.</p>
+	}
+}
+
+templ ErrorList(errs []ErrorEvent) {
+	<ul class="divide-y">
+		for _, e := range errs {
+			<li class="flex items-start justify-between gap-4 py-3 first:pt-0 last:pb-0">
+				<div class="min-w-0 space-y-1">
+					<p class="truncate font-mono text-xs" title={ e.Message }>{ e.Message }</p>
+					<p class="text-xs text-muted-foreground">{ e.Project } · { e.Env } · { e.LastSeen }</p>
+				</div>
+				@badge.Badge(badge.Props{Variant: badge.VariantDestructive}) {
+					{ fmt.Sprintf("×%d", e.Count) }
+				}
+			</li>
+		}
+		if len(errs) == 0 {
+			<li class="py-6 text-center text-sm text-muted-foreground">No errors. 🎉</li>
+		}
+	</ul>
+}
+
+func shortName(v any) string {
+	s := v.(string)
+	if len(s) > 10 {
+		return s[:9] + "…"
+	}
+	return s
+}
