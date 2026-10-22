@@ -89,6 +89,7 @@ func main() {
 	mux.Handle("GET /charts", templ.Handler(pages.Charts()))
 	mux.Handle("GET /analytics", templ.Handler(pages.Analytics()))
 	mux.HandleFunc("GET /analytics/revenue", revenueChart)
+	mux.Handle("GET /typography", templ.Handler(pages.Typography()))
 	mux.Handle("GET /projects", templ.Handler(pages.Projects()))
 	mux.HandleFunc("GET /projects/deployments", deploymentsFragment)
 	mux.HandleFunc("GET /projects/{slug}", projectDetail)

@@ -24,6 +24,7 @@ var navLinks = []navLink{
 	{"/charts", "Charts"},
 	{"/analytics", "Analytics"},
 	{"/projects", "Projects"},
+	{"/typography", "Typography"},
 }
 
 // Shell wraps a page in the shared header navigation. active is the current path.
@@ -80,7 +81,7 @@ func Shell(title, active string) templ.Component {
 					var templ_7745c5c3_Var4 string
 					templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(l.Label)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `layouts/shell.templ`, Line: 29, Col: 15}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `layouts/shell.templ`, Line: 30, Col: 15}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 					if templ_7745c5c3_Err != nil {
