@@ -9,8 +9,8 @@ import (
 )
 
 templ Home() {
-	@layouts.Base("go-templ-mock-1") {
-		<main class="mx-auto flex min-h-svh max-w-md flex-col justify-center gap-4 p-6">
+	@layouts.Shell("Home", "/") {
+		<div class="mx-auto flex max-w-md flex-col gap-4">
 			@card.Card() {
 				@card.Header() {
 					@card.Title() {
@@ -32,7 +32,7 @@ templ Home() {
 					<div id="greeting" class="text-sm text-muted-foreground">Enter a name and submit.</div>
 				}
 			}
-		</main>
+		</div>
 	}
 }
 

@@ -1,0 +1,134 @@
+package pages
+
+import (
+	"go-templ-mock-1/components/alert"
+	"go-templ-mock-1/components/button"
+	"go-templ-mock-1/components/card"
+	"go-templ-mock-1/components/checkbox"
+	"go-templ-mock-1/components/field"
+	"go-templ-mock-1/components/input"
+	"go-templ-mock-1/components/label"
+	"go-templ-mock-1/components/radiogroup"
+	selectcomp "go-templ-mock-1/components/select"
+	switchcomp "go-templ-mock-1/components/switch"
+	"go-templ-mock-1/components/textarea"
+	"go-templ-mock-1/layouts"
+)
+
+templ Forms() {
+	@layouts.Shell("Forms", "/forms") {
+		@card.Card() {
+			@card.Header() {
+				@card.Title() {
+					Contact form
+				}
+				@card.Description() {
+					Submitted with HTMX; the server replies with an alert fragment.
+				}
+			}
+			@card.Content() {
+				<form class="space-y-6" hx-post="/forms/submit" hx-target="#form-result" hx-swap="innerHTML">
+					@field.Group() {
+						@field.Field() {
+							@field.Label() {
+								Name
+							}
+							@input.Input(input.Props{ID: "name", Name: "name", Placeholder: "Ada Lovelace", Required: true})
+						}
+						@field.Field() {
+							@field.Label() {
+								Email
+							}
+							@input.Input(input.Props{ID: "email", Name: "email", Type: "email", Placeholder: "ada@example.com", Required: true})
+							@field.Description() {
+								We never share your email.
+							}
+						}
+						@field.Field() {
+							@field.Label() {
+								Topic
+							}
+							@selectcomp.Select(selectcomp.Props{Name: "topic", DefaultValue: "general"}) {
+								@selectcomp.Trigger(selectcomp.TriggerProps{Class: "w-[200px]"}) {
+									@selectcomp.Value(selectcomp.ValueProps{Placeholder: "Pick a topic"})
+								}
+								@selectcomp.Content() {
+									@selectcomp.Group() {
+										@selectcomp.Item(selectcomp.ItemProps{Value: "general"}) {
+											General
+										}
+										@selectcomp.Item(selectcomp.ItemProps{Value: "support"}) {
+											Support
+										}
+										@selectcomp.Item(selectcomp.ItemProps{Value: "feedback"}) {
+											Feedback
+										}
+									}
+								}
+							}
+						}
+						@field.Field() {
+							@field.Label() {
+								Message
+							}
+							@textarea.Textarea(textarea.Props{Name: "message", Placeholder: "How can we help?"})
+						}
+						@field.Field() {
+							@field.Label() {
+								Preferred reply
+							}
+							@radiogroup.RadioGroup(radiogroup.Props{Name: "reply", DefaultValue: "email"}) {
+								<div class="flex items-center gap-3">
+									@radiogroup.Item(radiogroup.ItemProps{ID: "reply-email", Value: "email"})
+									@label.Label(label.Props{For: "reply-email"}) {
+										Email
+									}
+								</div>
+								<div class="flex items-center gap-3">
+									@radiogroup.Item(radiogroup.ItemProps{ID: "reply-phone", Value: "phone"})
+									@label.Label(label.Props{For: "reply-phone"}) {
+										Phone
+									}
+								</div>
+							}
+						}
+						<div class="flex items-center gap-3">
+							@checkbox.Checkbox(checkbox.Props{ID: "terms", Name: "terms"})
+							@label.Label(label.Props{For: "terms"}) {
+								I agree to the terms
+							}
+						</div>
+						<div class="flex items-center gap-3">
+							@switchcomp.Switch(switchcomp.Props{ID: "newsletter", Name: "newsletter"})
+							@label.Label(label.Props{For: "newsletter"}) {
+								Subscribe to the newsletter
+							}
+						</div>
+					}
+					<div class="flex gap-2">
+						@button.Button(button.Props{Type: button.TypeSubmit}) {
+							Send
+						}
+						@button.Button(button.Props{Type: button.TypeReset, Variant: button.VariantOutline}) {
+							Reset
+						}
+					</div>
+				</form>
+			}
+			@card.Footer() {
+				<div id="form-result" class="w-full"></div>
+			}
+		}
+	}
+}
+
+templ FormResult(name, topic string) {
+	@alert.Alert() {
+		@alert.Title() {
+			Thanks, { name }!
+		}
+		@alert.Description() {
+			Your { topic } message was received.
+		}
+	}
+}

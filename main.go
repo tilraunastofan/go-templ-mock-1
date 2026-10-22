@@ -7,6 +7,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/a-h/templ"
 
@@ -23,11 +24,28 @@ func greet(w http.ResponseWriter, r *http.Request) {
 	templ.Handler(pages.Greeting(name)).ServeHTTP(w, r)
 }
 
+// submitForm renders an HTMX fragment confirming the contact form.
+func submitForm(w http.ResponseWriter, r *http.Request) {
+	templ.Handler(pages.FormResult(strings.TrimSpace(r.FormValue("name")), r.FormValue("topic"))).ServeHTTP(w, r)
+}
+
+// slowResult simulates a slow backend so the htmx indicator is visible.
+func slowResult(w http.ResponseWriter, r *http.Request) {
+	time.Sleep(time.Second)
+	templ.Handler(pages.SlowResult("Loaded at " + time.Now().Format("15:04:05"))).ServeHTTP(w, r)
+}
+
 func main() {
 	mux := http.NewServeMux()
 	setupAssetsRoutes(mux)
 	mux.Handle("GET /", templ.Handler(pages.Home()))
 	mux.HandleFunc("POST /greet", greet)
+	mux.Handle("GET /forms", templ.Handler(pages.Forms()))
+	mux.HandleFunc("POST /forms/submit", submitForm)
+	mux.Handle("GET /feedback", templ.Handler(pages.Feedback()))
+	mux.HandleFunc("GET /feedback/slow", slowResult)
+	mux.Handle("GET /overlays", templ.Handler(pages.Overlays()))
+	mux.Handle("GET /data", templ.Handler(pages.Data()))
 
 	ln, err := listen()
 	if err != nil {

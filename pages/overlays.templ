@@ -1,0 +1,141 @@
+package pages
+
+import (
+	"go-templ-mock-1/components/accordion"
+	"go-templ-mock-1/components/button"
+	"go-templ-mock-1/components/card"
+	"go-templ-mock-1/components/dialog"
+	"go-templ-mock-1/components/dropdownmenu"
+	"go-templ-mock-1/components/popover"
+	"go-templ-mock-1/components/tabs"
+	"go-templ-mock-1/components/tooltip"
+	"go-templ-mock-1/layouts"
+)
+
+templ Overlays() {
+	@layouts.Shell("Overlays", "/overlays") {
+		@card.Card() {
+			@card.Header() {
+				@card.Title() {
+					Overlays
+				}
+			}
+			@card.Content() {
+				<div class="flex flex-wrap items-center gap-3">
+					@dialog.Dialog() {
+						@button.Button(button.Props{Attributes: dialog.Trigger(ctx)}) {
+							Open dialog
+						}
+						@dialog.Content() {
+							@dialog.Header() {
+								@dialog.Title() {
+									Are you absolutely sure?
+								}
+								@dialog.Description() {
+									This action cannot be undone.
+								}
+							}
+							@dialog.Footer() {
+								@button.Button(button.Props{Variant: button.VariantOutline, Attributes: dialog.Close(ctx)}) {
+									Cancel
+								}
+							}
+						}
+					}
+					@dropdownmenu.DropdownMenu() {
+						@button.Button(button.Props{Variant: button.VariantOutline, Attributes: dropdownmenu.Trigger(ctx)}) {
+							Menu
+						}
+						@dropdownmenu.Content() {
+							@dropdownmenu.Item() {
+								Profile
+							}
+							@dropdownmenu.Item() {
+								Settings
+							}
+							@dropdownmenu.Separator()
+							@dropdownmenu.Item() {
+								Sign out
+							}
+						}
+					}
+					@popover.Popover() {
+						@button.Button(button.Props{Variant: button.VariantSecondary, Attributes: popover.Trigger(ctx)}) {
+							Popover
+						}
+						@popover.Content() {
+							@popover.Header() {
+								@popover.Title() {
+									Dimensions
+								}
+								@popover.Description() {
+									Set the dimensions for the layer.
+								}
+							}
+						}
+					}
+					@tooltip.Tooltip() {
+						@button.Button(button.Props{Variant: button.VariantGhost, Attributes: tooltip.Trigger(ctx)}) {
+							Hover me
+						}
+						@tooltip.Content() {
+							Add to library
+						}
+					}
+				</div>
+			}
+		}
+		@card.Card() {
+			@card.Header() {
+				@card.Title() {
+					Tabs
+				}
+			}
+			@card.Content() {
+				@tabs.Tabs(tabs.Props{DefaultValue: "account"}) {
+					@tabs.List() {
+						@tabs.Trigger(tabs.TriggerProps{Value: "account"}) {
+							Account
+						}
+						@tabs.Trigger(tabs.TriggerProps{Value: "password"}) {
+							Password
+						}
+					}
+					@tabs.Content(tabs.ContentProps{Value: "account"}) {
+						Make changes to your account here.
+					}
+					@tabs.Content(tabs.ContentProps{Value: "password"}) {
+						Change your password here.
+					}
+				}
+			}
+		}
+		@card.Card() {
+			@card.Header() {
+				@card.Title() {
+					Accordion
+				}
+			}
+			@card.Content() {
+				@accordion.Accordion(accordion.Props{DefaultValue: []string{"a11y"}}) {
+					@accordion.Item(accordion.ItemProps{Value: "a11y"}) {
+						@accordion.Trigger() {
+							Is it accessible?
+						}
+						@accordion.Content() {
+							Yes. It adheres to the WAI-ARIA design pattern.
+						}
+					}
+					@accordion.Item(accordion.ItemProps{Value: "htmx"}) {
+						@accordion.Trigger() {
+							Does it work with HTMX?
+						}
+						@accordion.Content() {
+							Yes. Components are server-rendered templ fragments with vanilla JS behavior.
+						}
+					}
+				}
+			}
+		}
+	}
+}

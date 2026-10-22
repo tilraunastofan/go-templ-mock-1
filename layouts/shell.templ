@@ -1,0 +1,42 @@
+package layouts
+
+import "go-templ-mock-1/components/button"
+
+type navLink struct {
+	Href  string
+	Label string
+}
+
+var navLinks = []navLink{
+	{"/", "Home"},
+	{"/forms", "Forms"},
+	{"/feedback", "Feedback"},
+	{"/overlays", "Overlays"},
+	{"/data", "Data"},
+}
+
+// Shell wraps a page in the shared header navigation. active is the current path.
+templ Shell(title, active string) {
+	@Base(title) {
+		<header class="border-b">
+			<nav class="mx-auto flex max-w-4xl items-center gap-1 p-3">
+				<span class="mr-4 font-semibold">go-templ-mock-1</span>
+				for _, l := range navLinks {
+					@button.Button(button.Props{Href: l.Href, Size: button.SizeSm, Variant: navVariant(l.Href == active)}) {
+						{ l.Label }
+					}
+				}
+			</nav>
+		</header>
+		<main class="mx-auto max-w-4xl space-y-6 p-6">
+			{ children... }
+		</main>
+	}
+}
+
+func navVariant(active bool) button.Variant {
+	if active {
+		return button.VariantSecondary
+	}
+	return button.VariantGhost
+}
