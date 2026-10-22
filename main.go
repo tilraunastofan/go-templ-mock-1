@@ -35,6 +35,11 @@ func slowResult(w http.ResponseWriter, r *http.Request) {
 	templ.Handler(pages.SlowResult("Loaded at " + time.Now().Format("15:04:05"))).ServeHTTP(w, r)
 }
 
+// revenueChart renders a chart with fresh random data for HTMX to swap in.
+func revenueChart(w http.ResponseWriter, r *http.Request) {
+	templ.Handler(pages.RevenueChart(pages.RandomRevenue())).ServeHTTP(w, r)
+}
+
 func main() {
 	mux := http.NewServeMux()
 	setupAssetsRoutes(mux)
@@ -46,6 +51,9 @@ func main() {
 	mux.HandleFunc("GET /feedback/slow", slowResult)
 	mux.Handle("GET /overlays", templ.Handler(pages.Overlays()))
 	mux.Handle("GET /data", templ.Handler(pages.Data()))
+	mux.Handle("GET /charts", templ.Handler(pages.Charts()))
+	mux.Handle("GET /analytics", templ.Handler(pages.Analytics()))
+	mux.HandleFunc("GET /analytics/revenue", revenueChart)
 
 	ln, err := listen()
 	if err != nil {

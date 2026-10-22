@@ -1,0 +1,116 @@
+package pages
+
+import (
+	"go-templ-mock-1/components/card"
+	"go-templ-mock-1/components/chart"
+	"go-templ-mock-1/layouts"
+)
+
+var visitorData = []chart.Datum{
+	{"month": "January", "desktop": 186, "mobile": 80},
+	{"month": "February", "desktop": 305, "mobile": 200},
+	{"month": "March", "desktop": 237, "mobile": 120},
+	{"month": "April", "desktop": 273, "mobile": 190},
+	{"month": "May", "desktop": 209, "mobile": 130},
+	{"month": "June", "desktop": 314, "mobile": 240},
+}
+
+var visitorConfig = chart.Config{
+	{Key: "desktop", Label: "Desktop", Color: "#2563eb"},
+	{Key: "mobile", Label: "Mobile", Color: "#60a5fa"},
+}
+
+func monthShort(v any) string {
+	return v.(string)[:3]
+}
+
+templ Charts() {
+	@layouts.Shell("Charts", "/charts") {
+		<div class="grid gap-6 md:grid-cols-2">
+			@card.Card() {
+				@card.Header() {
+					@card.Title() {
+						Bar chart
+					}
+					@card.Description() {
+						Visitors per month, grouped.
+					}
+				}
+				@card.Content() {
+					@chart.Container(chart.ContainerProps{ID: "bar", Config: visitorConfig, Class: "min-h-[240px] w-full"}) {
+						@chart.BarChart(chart.BarChartProps{Data: visitorData}) {
+							@chart.CartesianGrid(chart.CartesianGridProps{Vertical: chart.Bool(false)})
+							@chart.XAxis(chart.XAxisProps{DataKey: "month", TickMargin: 10, TickFormatter: monthShort})
+							@chart.Tooltip()
+							@chart.Legend()
+							@chart.Bar(chart.BarProps{DataKey: "desktop", Fill: "var(--color-desktop)", Radius: 4})
+							@chart.Bar(chart.BarProps{DataKey: "mobile", Fill: "var(--color-mobile)", Radius: 4})
+						}
+					}
+				}
+			}
+			@card.Card() {
+				@card.Header() {
+					@card.Title() {
+						Line chart
+					}
+					@card.Description() {
+						The same data as smooth lines.
+					}
+				}
+				@card.Content() {
+					@chart.Container(chart.ContainerProps{ID: "line", Config: visitorConfig, Class: "min-h-[240px] w-full"}) {
+						@chart.LineChart(chart.LineChartProps{Data: visitorData}) {
+							@chart.CartesianGrid(chart.CartesianGridProps{Vertical: chart.Bool(false)})
+							@chart.XAxis(chart.XAxisProps{DataKey: "month", TickMargin: 10, TickFormatter: monthShort})
+							@chart.Tooltip()
+							@chart.Line(chart.LineProps{DataKey: "desktop", Type: chart.CurveMonotone, Stroke: "var(--color-desktop)", StrokeWidth: 2})
+							@chart.Line(chart.LineProps{DataKey: "mobile", Type: chart.CurveMonotone, Stroke: "var(--color-mobile)", StrokeWidth: 2})
+						}
+					}
+				}
+			}
+			@card.Card() {
+				@card.Header() {
+					@card.Title() {
+						Stacked area chart
+					}
+					@card.Description() {
+						Total traffic split by device.
+					}
+				}
+				@card.Content() {
+					@chart.Container(chart.ContainerProps{ID: "area", Config: visitorConfig, Class: "min-h-[240px] w-full"}) {
+						@chart.AreaChart(chart.AreaChartProps{Data: visitorData}) {
+							@chart.CartesianGrid(chart.CartesianGridProps{Vertical: chart.Bool(false)})
+							@chart.XAxis(chart.XAxisProps{DataKey: "month", TickMargin: 10, TickFormatter: monthShort})
+							@chart.Tooltip()
+							@chart.Area(chart.AreaProps{DataKey: "mobile", Type: chart.CurveNatural, StackID: "a", Fill: "var(--color-mobile)", Stroke: "var(--color-mobile)", FillOpacity: 0.4})
+							@chart.Area(chart.AreaProps{DataKey: "desktop", Type: chart.CurveNatural, StackID: "a", Fill: "var(--color-desktop)", Stroke: "var(--color-desktop)", FillOpacity: 0.4})
+						}
+					}
+				}
+			}
+			@card.Card() {
+				@card.Header() {
+					@card.Title() {
+						Horizontal bar chart
+					}
+					@card.Description() {
+						Desktop visitors, ranked.
+					}
+				}
+				@card.Content() {
+					@chart.Container(chart.ContainerProps{ID: "hbar", Config: visitorConfig, Class: "min-h-[240px] w-full"}) {
+						@chart.BarChart(chart.BarChartProps{Data: visitorData, Layout: "vertical"}) {
+							@chart.XAxis(chart.XAxisProps{Type: "number", Hide: true})
+							@chart.YAxis(chart.YAxisProps{DataKey: "month", Type: "category", TickFormatter: monthShort})
+							@chart.Tooltip()
+							@chart.Bar(chart.BarProps{DataKey: "desktop", Fill: "var(--color-desktop)", Radius: 4})
+						}
+					}
+				}
+			}
+		</div>
+	}
+}

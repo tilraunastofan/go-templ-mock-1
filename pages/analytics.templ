@@ -1,0 +1,166 @@
+package pages
+
+import (
+	"fmt"
+	"math/rand/v2"
+
+	"go-templ-mock-1/components/button"
+	"go-templ-mock-1/components/card"
+	"go-templ-mock-1/components/chart"
+	"go-templ-mock-1/layouts"
+)
+
+type stat struct {
+	Label, Value, Delta string
+}
+
+var stats = []stat{
+	{"Revenue", "$45,231", "+20.1% from last month"},
+	{"Subscriptions", "+2,350", "+180.1% from last month"},
+	{"Sales", "+12,234", "+19% from last month"},
+	{"Active now", "+573", "+201 since last hour"},
+}
+
+var browserData = []chart.Datum{
+	{"browser": "chrome", "visitors": 275},
+	{"browser": "safari", "visitors": 200},
+	{"browser": "firefox", "visitors": 187},
+	{"browser": "edge", "visitors": 173},
+	{"browser": "other", "visitors": 90},
+}
+
+var browserConfig = chart.Config{
+	{Key: "visitors", Label: "Visitors"},
+	{Key: "chrome", Label: "Chrome", Color: "#2563eb"},
+	{Key: "safari", Label: "Safari", Color: "#16a34a"},
+	{Key: "firefox", Label: "Firefox", Color: "#ea580c"},
+	{Key: "edge", Label: "Edge", Color: "#9333ea"},
+	{Key: "other", Label: "Other", Color: "#64748b"},
+}
+
+var skillData = []chart.Datum{
+	{"skill": "Go", "score": 90},
+	{"skill": "Templ", "score": 80},
+	{"skill": "HTMX", "score": 70},
+	{"skill": "Tailwind", "score": 85},
+	{"skill": "SQL", "score": 65},
+	{"skill": "Docker", "score": 60},
+}
+
+var skillConfig = chart.Config{
+	{Key: "score", Label: "Score", Color: "#2563eb"},
+}
+
+var revenueConfig = chart.Config{
+	{Key: "revenue", Label: "Revenue", Color: "#2563eb"},
+}
+
+// RandomRevenue builds a fresh data set for the HTMX-refreshed chart.
+func RandomRevenue() []chart.Datum {
+	months := []string{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"}
+	data := make([]chart.Datum, len(months))
+	for i, m := range months {
+		data[i] = chart.Datum{"month": m, "revenue": 1000 + rand.IntN(4000)}
+	}
+	return data
+}
+
+templ Analytics() {
+	@layouts.Shell("Analytics", "/analytics") {
+		<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+			for _, s := range stats {
+				@card.Card() {
+					@card.Header() {
+						@card.Description() {
+							{ s.Label }
+						}
+						@card.Title(card.TitleProps{Class: "text-2xl"}) {
+							{ s.Value }
+						}
+					}
+					@card.Footer() {
+						<span class="text-xs text-muted-foreground">{ s.Delta }</span>
+					}
+				}
+			}
+		</div>
+		<div class="grid gap-6 md:grid-cols-2">
+			@card.Card() {
+				@card.Header() {
+					@card.Title() {
+						Browsers
+					}
+					@card.Description() {
+						Donut chart of visitors by browser.
+					}
+				}
+				@card.Content() {
+					@chart.Container(chart.ContainerProps{ID: "pie", Config: browserConfig, Class: "mx-auto min-h-[240px] w-full max-w-xs"}) {
+						@chart.PieChart() {
+							@chart.Tooltip()
+							@chart.Pie(chart.PieProps{Data: browserData, DataKey: "visitors", NameKey: "browser", InnerRadius: 60, StrokeWidth: 4}) {
+								@chart.Cell(chart.CellProps{Fill: "var(--color-chrome)"})
+								@chart.Cell(chart.CellProps{Fill: "var(--color-safari)"})
+								@chart.Cell(chart.CellProps{Fill: "var(--color-firefox)"})
+								@chart.Cell(chart.CellProps{Fill: "var(--color-edge)"})
+								@chart.Cell(chart.CellProps{Fill: "var(--color-other)"})
+							}
+						}
+					}
+				}
+			}
+			@card.Card() {
+				@card.Header() {
+					@card.Title() {
+						Skills
+					}
+					@card.Description() {
+						Radar chart.
+					}
+				}
+				@card.Content() {
+					@chart.Container(chart.ContainerProps{ID: "radar", Config: skillConfig, Class: "mx-auto min-h-[240px] w-full max-w-xs"}) {
+						@chart.RadarChart(chart.RadarChartProps{Data: skillData}) {
+							@chart.Tooltip()
+							@chart.PolarAngleAxis(chart.PolarAngleAxisProps{DataKey: "skill"})
+							@chart.PolarGrid()
+							@chart.Radar(chart.RadarProps{DataKey: "score", Fill: "var(--color-score)", FillOpacity: chart.Float(0.5)})
+						}
+					}
+				}
+			}
+		</div>
+		@card.Card() {
+			@card.Header() {
+				@card.Title() {
+					Live revenue
+				}
+				@card.Description() {
+					The chart below is re-rendered by the server and swapped in with HTMX.
+				}
+				@card.Action() {
+					@button.Button(button.Props{Size: button.SizeSm, Variant: button.VariantOutline, Attributes: templ.Attributes{"hx-get": "/analytics/revenue", "hx-target": "#revenue-chart", "hx-swap": "innerHTML"}}) {
+						Refresh
+					}
+				}
+			}
+			@card.Content() {
+				<div id="revenue-chart">
+					@RevenueChart(RandomRevenue())
+				</div>
+			}
+		}
+	}
+}
+
+// RevenueChart is also the fragment returned by GET /analytics/revenue.
+templ RevenueChart(data []chart.Datum) {
+	@chart.Container(chart.ContainerProps{ID: fmt.Sprintf("revenue-%d", rand.IntN(1_000_000)), Config: revenueConfig, Class: "min-h-[240px] w-full"}) {
+		@chart.BarChart(chart.BarChartProps{Data: data}) {
+			@chart.CartesianGrid(chart.CartesianGridProps{Vertical: chart.Bool(false)})
+			@chart.XAxis(chart.XAxisProps{DataKey: "month", TickMargin: 10})
+			@chart.Tooltip()
+			@chart.Bar(chart.BarProps{DataKey: "revenue", Fill: "var(--color-revenue)", Radius: 4})
+		}
+	}
+}
