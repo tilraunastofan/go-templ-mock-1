@@ -2,8 +2,10 @@ package pages
 
 import (
 	"fmt"
+	"strconv"
 
 	"go-templ-mock-1/components/badge"
+	"go-templ-mock-1/components/button"
 	"go-templ-mock-1/components/card"
 	"go-templ-mock-1/components/input"
 	"go-templ-mock-1/components/table"
@@ -22,7 +24,10 @@ templ Search() {
 				}
 			}
 			@card.Content() {
-				<div class="space-y-4">
+				// Alpine owns the client-side state (selection, compact toggle).
+				// It lives on this parent, which htmx never swaps, so it survives
+				// every new search; swapped-in rows just bind to it.
+				<div class="space-y-4" x-data="{ selected: [], compact: false }">
 					@input.Input(input.Props{
 						Type:        "search",
 						Name:        "q",
@@ -34,7 +39,19 @@ templ Search() {
 							"hx-swap":    "innerHTML",
 						},
 					})
-					<div id="search-results">
+					<div class="flex items-center gap-4 text-sm">
+						<label class="flex items-center gap-2">
+							<input type="checkbox" x-model="compact"/>
+							Compact rows
+						</label>
+						<span class="text-muted-foreground" x-text="selected.length + ' selected'"></span>
+						<span x-show="selected.length" x-cloak>
+							@button.Button(button.Props{Size: button.SizeXs, Variant: button.VariantOutline, Attributes: templ.Attributes{"type": "button", "@click": "selected = []"}}) {
+								Clear selection
+							}
+						</span>
+					</div>
+					<div id="search-results" :class="compact && 'text-xs [&_td]:py-1'">
 						@SearchResults(SearchPeople(""))
 					</div>
 				</div>
@@ -61,6 +78,9 @@ templ SearchResults(results []Person, total int) {
 			@table.Header() {
 				@table.Row() {
 					@table.Head() {
+						<span class="sr-only">Select</span>
+					}
+					@table.Head() {
 						Name
 					}
 					@table.Head() {
@@ -79,7 +99,10 @@ templ SearchResults(results []Person, total int) {
 			}
 			@table.Body() {
 				for _, p := range results {
-					@table.Row() {
+					@table.Row(table.RowProps{Attributes: templ.Attributes{":data-state": fmt.Sprintf("selected.includes('%d') ? 'selected' : ''", p.ID)}}) {
+						@table.Cell() {
+							<input type="checkbox" value={ strconv.Itoa(p.ID) } x-model="selected" aria-label={ "Select " + p.Name }/>
+						}
 						@table.Cell() {
 							<div class="font-medium">{ p.Name }</div>
 							<div class="text-xs text-muted-foreground">{ p.Email }</div>
