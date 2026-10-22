@@ -1,0 +1,57 @@
+package layouts
+
+import (
+	"go-templ-mock-1/components/button"
+	"go-templ-mock-1/components/dropdownmenu"
+	"go-templ-mock-1/components/icon"
+)
+
+// themeInit runs in <head> before first paint so the page never flashes the wrong theme.
+const themeInit = `(function () {
+	function apply() {
+		var pref = 'system';
+		try { pref = localStorage.getItem('theme') || 'system'; } catch (e) {}
+		var dark = pref === 'dark' || (pref === 'system' && matchMedia('(prefers-color-scheme: dark)').matches);
+		document.documentElement.classList.toggle('dark', dark);
+		document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
+	}
+	window.setTheme = function (pref) {
+		try {
+			if (pref === 'system') localStorage.removeItem('theme');
+			else localStorage.setItem('theme', pref);
+		} catch (e) {}
+		apply();
+	};
+	apply();
+	matchMedia('(prefers-color-scheme: dark)').addEventListener('change', apply);
+})();`
+
+templ ThemeScript() {
+	@templ.Raw("<script>" + themeInit + "</script>")
+}
+
+// ThemeToggle is a Light / Dark / System dropdown.
+templ ThemeToggle() {
+	@dropdownmenu.DropdownMenu() {
+		@button.Button(button.Props{Variant: button.VariantOutline, Size: button.SizeIcon, Attributes: withLabel(dropdownmenu.Trigger(ctx), "Toggle theme")}) {
+			@icon.Sun(icon.Props{Class: "dark:hidden"})
+			@icon.Moon(icon.Props{Class: "hidden dark:block"})
+		}
+		@dropdownmenu.Content(dropdownmenu.ContentProps{Align: dropdownmenu.AlignEnd}) {
+			@dropdownmenu.Item(dropdownmenu.ItemProps{Attributes: templ.Attributes{"onclick": "setTheme('light')"}}) {
+				Light
+			}
+			@dropdownmenu.Item(dropdownmenu.ItemProps{Attributes: templ.Attributes{"onclick": "setTheme('dark')"}}) {
+				Dark
+			}
+			@dropdownmenu.Item(dropdownmenu.ItemProps{Attributes: templ.Attributes{"onclick": "setTheme('system')"}}) {
+				System
+			}
+		}
+	}
+}
+
+func withLabel(attrs templ.Attributes, label string) templ.Attributes {
+	attrs["aria-label"] = label
+	return attrs
+}
