@@ -12,6 +12,7 @@ import (
 	"github.com/a-h/templ"
 
 	"go-templ-mock-1/assets"
+	"go-templ-mock-1/htmlfmt"
 	"go-templ-mock-1/pages"
 )
 
@@ -32,7 +33,7 @@ func submitForm(w http.ResponseWriter, r *http.Request) {
 // slowResult simulates a slow backend so the htmx indicator is visible.
 func slowResult(w http.ResponseWriter, r *http.Request) {
 	time.Sleep(time.Second)
-	templ.Handler(pages.SlowResult("Loaded at " + time.Now().Format("15:04:05"))).ServeHTTP(w, r)
+	templ.Handler(pages.SlowResult("Loaded at "+time.Now().Format("15:04:05"))).ServeHTTP(w, r)
 }
 
 // revenueChart renders a chart with fresh random data for HTMX to swap in.
@@ -109,7 +110,7 @@ func main() {
 		os.Exit(1)
 	}
 	fmt.Printf("Server is running on http://localhost:%d\n", ln.Addr().(*net.TCPAddr).Port)
-	if err := http.Serve(ln, mux); err != nil {
+	if err := http.Serve(ln, htmlfmt.Middleware(mux)); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
