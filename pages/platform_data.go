@@ -217,6 +217,14 @@ func statusVariantFor(status string) badge.Variant {
 	return badge.VariantDestructive
 }
 
+// statusClass overrides the default (black) badge look so healthy reads green.
+func statusClass(status string) string {
+	if status == "healthy" {
+		return "bg-green-600! text-white! dark:bg-green-500!"
+	}
+	return ""
+}
+
 func severityVariant(sev string) badge.Variant {
 	switch sev {
 	case "critical", "high":

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"go-templ-mock-1/components/badge"
+	"go-templ-mock-1/components/icon"
 	"go-templ-mock-1/components/button"
 	"go-templ-mock-1/components/card"
 	"go-templ-mock-1/components/chart"
@@ -184,7 +185,10 @@ templ statCard(label, value, note string) {
 templ envCell(d Deployment) {
 	<div class="flex flex-col items-start gap-1">
 		<span class="font-mono text-xs">{ d.Version }</span>
-		@badge.Badge(badge.Props{Variant: statusVariantFor(d.Status)}) {
+		@badge.Badge(badge.Props{Variant: statusVariantFor(d.Status), Class: statusClass(d.Status)}) {
+			if d.Status == "healthy" {
+				@icon.CircleCheck()
+			}
 			{ d.Status }
 		}
 	</div>
@@ -241,7 +245,10 @@ templ DeployHistoryTable(events []DeployEvent) {
 						{ e.Version }
 					}
 					@table.Cell() {
-						@badge.Badge(badge.Props{Variant: statusVariantFor(e.Status)}) {
+						@badge.Badge(badge.Props{Variant: statusVariantFor(e.Status), Class: statusClass(e.Status)}) {
+							if e.Status == "healthy" {
+								@icon.CircleCheck()
+							}
 							{ e.Status }
 						}
 					}

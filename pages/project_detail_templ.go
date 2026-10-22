@@ -15,6 +15,7 @@ import (
 	"go-templ-mock-1/components/badge"
 	"go-templ-mock-1/components/button"
 	"go-templ-mock-1/components/card"
+	"go-templ-mock-1/components/icon"
 	"go-templ-mock-1/components/progress"
 	"go-templ-mock-1/components/table"
 	"go-templ-mock-1/layouts"
@@ -60,7 +61,7 @@ func ProjectDetail(p Project) templ.Component {
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(p.Name)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 20, Col: 47}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 21, Col: 47}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
@@ -73,7 +74,7 @@ func ProjectDetail(p Project) templ.Component {
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(p.Team)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 21, Col: 53}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 22, Col: 53}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {
@@ -86,7 +87,7 @@ func ProjectDetail(p Project) templ.Component {
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(p.Language)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 21, Col: 71}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 22, Col: 71}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 			if templ_7745c5c3_Err != nil {
@@ -99,7 +100,7 @@ func ProjectDetail(p Project) templ.Component {
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(p.Image)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 21, Col: 110}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 22, Col: 110}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 			if templ_7745c5c3_Err != nil {
@@ -180,7 +181,7 @@ func ProjectDetail(p Project) templ.Component {
 						var templ_7745c5c3_Var11 string
 						templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d findings in %s:%s", p.Vulns.Total(), p.Image, p.Deployments["prod"].Version))
 						if templ_7745c5c3_Err != nil {
-							return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 37, Col: 100}
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 38, Col: 100}
 						}
 						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 						if templ_7745c5c3_Err != nil {
@@ -408,7 +409,7 @@ func ProjectDetail(p Project) templ.Component {
 										var templ_7745c5c3_Var24 string
 										templ_7745c5c3_Var24, templ_7745c5c3_Err = templ.JoinStringErrs(c.ID)
 										if templ_7745c5c3_Err != nil {
-											return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 65, Col: 16}
+											return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 66, Col: 16}
 										}
 										_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var24))
 										if templ_7745c5c3_Err != nil {
@@ -447,7 +448,7 @@ func ProjectDetail(p Project) templ.Component {
 											var templ_7745c5c3_Var27 string
 											templ_7745c5c3_Var27, templ_7745c5c3_Err = templ.JoinStringErrs(c.Severity)
 											if templ_7745c5c3_Err != nil {
-												return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 69, Col: 23}
+												return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 70, Col: 23}
 											}
 											_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var27))
 											if templ_7745c5c3_Err != nil {
@@ -480,7 +481,7 @@ func ProjectDetail(p Project) templ.Component {
 										var templ_7745c5c3_Var29 string
 										templ_7745c5c3_Var29, templ_7745c5c3_Err = templ.JoinStringErrs(c.Package)
 										if templ_7745c5c3_Err != nil {
-											return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 73, Col: 21}
+											return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 74, Col: 21}
 										}
 										_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var29))
 										if templ_7745c5c3_Err != nil {
@@ -507,7 +508,7 @@ func ProjectDetail(p Project) templ.Component {
 										var templ_7745c5c3_Var31 string
 										templ_7745c5c3_Var31, templ_7745c5c3_Err = templ.JoinStringErrs(c.Installed)
 										if templ_7745c5c3_Err != nil {
-											return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 76, Col: 23}
+											return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 77, Col: 23}
 										}
 										_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var31))
 										if templ_7745c5c3_Err != nil {
@@ -534,7 +535,7 @@ func ProjectDetail(p Project) templ.Component {
 										var templ_7745c5c3_Var33 string
 										templ_7745c5c3_Var33, templ_7745c5c3_Err = templ.JoinStringErrs(c.Fixed)
 										if templ_7745c5c3_Err != nil {
-											return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 79, Col: 19}
+											return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 80, Col: 19}
 										}
 										_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var33))
 										if templ_7745c5c3_Err != nil {
@@ -654,7 +655,7 @@ func ProjectDetail(p Project) templ.Component {
 					var templ_7745c5c3_Var38 string
 					templ_7745c5c3_Var38, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d%%", p.Coverage))
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 101, Col: 47}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 102, Col: 47}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var38))
 					if templ_7745c5c3_Err != nil {
@@ -675,7 +676,7 @@ func ProjectDetail(p Project) templ.Component {
 					var templ_7745c5c3_Var39 string
 					templ_7745c5c3_Var39, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d / %d", p.Vulns.Critical, p.Vulns.High))
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 107, Col: 69}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 108, Col: 69}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var39))
 					if templ_7745c5c3_Err != nil {
@@ -688,7 +689,7 @@ func ProjectDetail(p Project) templ.Component {
 					var templ_7745c5c3_Var40 string
 					templ_7745c5c3_Var40, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprint(errorCount(p.Slug)))
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 111, Col: 45}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 112, Col: 45}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var40))
 					if templ_7745c5c3_Err != nil {
@@ -949,7 +950,7 @@ func envCard(p Project, env string, idx int) templ.Component {
 					var templ_7745c5c3_Var53 string
 					templ_7745c5c3_Var53, templ_7745c5c3_Err = templ.JoinStringErrs(env)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 147, Col: 9}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 148, Col: 9}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var53))
 					if templ_7745c5c3_Err != nil {
@@ -976,7 +977,7 @@ func envCard(p Project, env string, idx int) templ.Component {
 					var templ_7745c5c3_Var55 string
 					templ_7745c5c3_Var55, templ_7745c5c3_Err = templ.JoinStringErrs(d.Version)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 150, Col: 15}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 151, Col: 15}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var55))
 					if templ_7745c5c3_Err != nil {
@@ -1012,10 +1013,20 @@ func envCard(p Project, env string, idx int) templ.Component {
 							}()
 						}
 						ctx = templ.InitializeContext(ctx)
+						if d.Status == "healthy" {
+							templ_7745c5c3_Err = icon.CircleCheck().Render(ctx, templ_7745c5c3_Buffer)
+							if templ_7745c5c3_Err != nil {
+								return templ_7745c5c3_Err
+							}
+						}
+						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, " ")
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
 						var templ_7745c5c3_Var58 string
 						templ_7745c5c3_Var58, templ_7745c5c3_Err = templ.JoinStringErrs(d.Status)
 						if templ_7745c5c3_Err != nil {
-							return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 154, Col: 15}
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 158, Col: 15}
 						}
 						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var58))
 						if templ_7745c5c3_Err != nil {
@@ -1023,7 +1034,7 @@ func envCard(p Project, env string, idx int) templ.Component {
 						}
 						return nil
 					})
-					templ_7745c5c3_Err = badge.Badge(badge.Props{Variant: statusVariantFor(d.Status)}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var57), templ_7745c5c3_Buffer)
+					templ_7745c5c3_Err = badge.Badge(badge.Props{Variant: statusVariantFor(d.Status), Class: statusClass(d.Status)}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var57), templ_7745c5c3_Buffer)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -1051,59 +1062,59 @@ func envCard(p Project, env string, idx int) templ.Component {
 					}()
 				}
 				ctx = templ.InitializeContext(ctx)
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "<dl class=\"grid grid-cols-2 gap-1 text-sm\"><dt class=\"text-muted-foreground\">Replicas</dt><dd>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "<dl class=\"grid grid-cols-2 gap-1 text-sm\"><dt class=\"text-muted-foreground\">Replicas</dt><dd>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var60 string
 				templ_7745c5c3_Var60, templ_7745c5c3_Err = templ.JoinStringErrs(d.Replicas)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 161, Col: 20}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 165, Col: 20}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var60))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "</dd><dt class=\"text-muted-foreground\">Deployed</dt><dd>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "</dd><dt class=\"text-muted-foreground\">Deployed</dt><dd>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var61 string
 				templ_7745c5c3_Var61, templ_7745c5c3_Err = templ.JoinStringErrs(d.DeployedAt)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 163, Col: 22}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 167, Col: 22}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var61))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, " by ")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, " by ")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var62 string
 				templ_7745c5c3_Var62, templ_7745c5c3_Err = templ.JoinStringErrs(d.By)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 163, Col: 34}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 167, Col: 34}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var62))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, "</dd><dt class=\"text-muted-foreground\">Commit</dt><dd class=\"font-mono text-xs\">")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 28, "</dd><dt class=\"text-muted-foreground\">Commit</dt><dd class=\"font-mono text-xs\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var63 string
 				templ_7745c5c3_Var63, templ_7745c5c3_Err = templ.JoinStringErrs(d.Commit)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 165, Col: 44}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 169, Col: 44}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var63))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 28, "</dd></dl>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 29, "</dd></dl>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -1138,14 +1149,14 @@ func envCard(p Project, env string, idx int) templ.Component {
 							}()
 						}
 						ctx = templ.InitializeContext(ctx)
-						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 29, "Promote to ")
+						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 30, "Promote to ")
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
 						}
 						var templ_7745c5c3_Var66 string
 						templ_7745c5c3_Var66, templ_7745c5c3_Err = templ.JoinStringErrs(Environments[idx+1])
 						if templ_7745c5c3_Err != nil {
-							return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 174, Col: 37}
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 178, Col: 37}
 						}
 						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var66))
 						if templ_7745c5c3_Err != nil {
@@ -1222,7 +1233,7 @@ func PromoteResult(project, from, to, version string) templ.Component {
 					}()
 				}
 				ctx = templ.InitializeContext(ctx)
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 30, "Promotion queued")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 31, "Promotion queued")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -1247,52 +1258,52 @@ func PromoteResult(project, from, to, version string) templ.Component {
 				var templ_7745c5c3_Var71 string
 				templ_7745c5c3_Var71, templ_7745c5c3_Err = templ.JoinStringErrs(project)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 187, Col: 12}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 191, Col: 12}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var71))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 31, " ")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 32, " ")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var72 string
 				templ_7745c5c3_Var72, templ_7745c5c3_Err = templ.JoinStringErrs(version)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 187, Col: 24}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 191, Col: 24}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var72))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 32, " is being promoted from ")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 33, " is being promoted from ")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var73 string
 				templ_7745c5c3_Var73, templ_7745c5c3_Err = templ.JoinStringErrs(from)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 187, Col: 56}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 191, Col: 56}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var73))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 33, " to ")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 34, " to ")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var74 string
 				templ_7745c5c3_Var74, templ_7745c5c3_Err = templ.JoinStringErrs(to)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 187, Col: 66}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `pages/project_detail.templ`, Line: 191, Col: 66}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var74))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 34, ". (Mock: nothing was deployed.)")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 35, ". (Mock: nothing was deployed.)")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}

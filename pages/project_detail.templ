@@ -5,6 +5,7 @@ import (
 
 	"go-templ-mock-1/components/alert"
 	"go-templ-mock-1/components/badge"
+	"go-templ-mock-1/components/icon"
 	"go-templ-mock-1/components/button"
 	"go-templ-mock-1/components/card"
 	"go-templ-mock-1/components/progress"
@@ -150,7 +151,10 @@ templ envCard(p Project, env string, idx int) {
 				{ d.Version }
 			}
 			@card.Action() {
-				@badge.Badge(badge.Props{Variant: statusVariantFor(d.Status)}) {
+				@badge.Badge(badge.Props{Variant: statusVariantFor(d.Status), Class: statusClass(d.Status)}) {
+					if d.Status == "healthy" {
+						@icon.CircleCheck()
+					}
 					{ d.Status }
 				}
 			}
