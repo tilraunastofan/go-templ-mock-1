@@ -1,0 +1,43 @@
+package pages
+
+import (
+	"go-templ-mock-1/components/badge"
+	"go-templ-mock-1/components/button"
+	"go-templ-mock-1/components/card"
+	"go-templ-mock-1/components/input"
+	"go-templ-mock-1/layouts"
+)
+
+templ Home() {
+	@layouts.Base("go-templ-mock-1") {
+		<main class="mx-auto flex min-h-svh max-w-md flex-col justify-center gap-4 p-6">
+			@card.Card() {
+				@card.Header() {
+					@card.Title() {
+						Go + Templ + HTMX 4
+					}
+					@card.Description() {
+						Styled with shadcn-templ and Tailwind CSS 4.3.
+					}
+				}
+				@card.Content() {
+					<form class="flex gap-2" hx-post="/greet" hx-target="#greeting" hx-swap="innerHTML">
+						@input.Input(input.Props{Name: "name", Placeholder: "Your name", Required: true})
+						@button.Button(button.Props{Type: button.TypeSubmit}) {
+							Greet
+						}
+					</form>
+				}
+				@card.Footer() {
+					<div id="greeting" class="text-sm text-muted-foreground">Enter a name and submit.</div>
+				}
+			}
+		</main>
+	}
+}
+
+templ Greeting(name string) {
+	@badge.Badge() {
+		Hello, { name }!
+	}
+}
