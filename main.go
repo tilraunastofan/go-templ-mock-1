@@ -45,6 +45,12 @@ func deploymentsFragment(w http.ResponseWriter, r *http.Request) {
 	templ.Handler(pages.DeployHistoryTable(pages.FilterHistory(r.URL.Query().Get("env"), ""))).ServeHTTP(w, r)
 }
 
+// searchResults renders only the results table for ?q=, for HTMX to swap in.
+func searchResults(w http.ResponseWriter, r *http.Request) {
+	results, total := pages.SearchPeople(r.URL.Query().Get("q"))
+	templ.Handler(pages.SearchResults(results, total)).ServeHTTP(w, r)
+}
+
 func projectDetail(w http.ResponseWriter, r *http.Request) {
 	p, ok := pages.FindProject(r.PathValue("slug"))
 	if !ok {
@@ -89,6 +95,8 @@ func main() {
 	mux.Handle("GET /charts", templ.Handler(pages.Charts()))
 	mux.Handle("GET /analytics", templ.Handler(pages.Analytics()))
 	mux.HandleFunc("GET /analytics/revenue", revenueChart)
+	mux.Handle("GET /search", templ.Handler(pages.Search()))
+	mux.HandleFunc("GET /search/results", searchResults)
 	mux.Handle("GET /typography", templ.Handler(pages.Typography()))
 	mux.Handle("GET /projects", templ.Handler(pages.Projects()))
 	mux.HandleFunc("GET /projects/deployments", deploymentsFragment)

@@ -1,0 +1,113 @@
+package pages
+
+import (
+	"fmt"
+
+	"go-templ-mock-1/components/badge"
+	"go-templ-mock-1/components/card"
+	"go-templ-mock-1/components/input"
+	"go-templ-mock-1/components/table"
+	"go-templ-mock-1/layouts"
+)
+
+templ Search() {
+	@layouts.Shell("Search", "/search") {
+		@card.Card() {
+			@card.Header() {
+				@card.Title() {
+					Search people
+				}
+				@card.Description() {
+					Type to search a mock dataset of 200 people (name, email, role, department, city, status). Each keystroke fetches only the results fragment with HTMX.
+				}
+			}
+			@card.Content() {
+				<div class="space-y-4">
+					@input.Input(input.Props{
+						Type:        "search",
+						Name:        "q",
+						Placeholder: "Try \"berlin\", \"sre\" or \"ada\"...",
+						Attributes: templ.Attributes{
+							"hx-get":     "/search/results",
+							"hx-trigger": "input changed delay:250ms, search",
+							"hx-target":  "#search-results",
+							"hx-swap":    "innerHTML",
+						},
+					})
+					<div id="search-results">
+						@SearchResults(SearchPeople(""))
+					</div>
+				</div>
+			}
+		}
+	}
+}
+
+// SearchResults is the HTMX fragment swapped into #search-results.
+templ SearchResults(results []Person, total int) {
+	<p class="mb-2 text-sm text-muted-foreground">
+		if total == 0 {
+			No matches.
+		} else if total > len(results) {
+			{ fmt.Sprintf("Showing %d of %d matches.", len(results), total) }
+		} else if total == 1 {
+			1 match.
+		} else {
+			{ fmt.Sprintf("%d matches.", total) }
+		}
+	</p>
+	if total > 0 {
+		@table.Table() {
+			@table.Header() {
+				@table.Row() {
+					@table.Head() {
+						Name
+					}
+					@table.Head() {
+						Role
+					}
+					@table.Head() {
+						Department
+					}
+					@table.Head() {
+						City
+					}
+					@table.Head() {
+						Status
+					}
+				}
+			}
+			@table.Body() {
+				for _, p := range results {
+					@table.Row() {
+						@table.Cell() {
+							<div class="font-medium">{ p.Name }</div>
+							<div class="text-xs text-muted-foreground">{ p.Email }</div>
+						}
+						@table.Cell() {
+							{ p.Role }
+						}
+						@table.Cell() {
+							{ p.Department }
+						}
+						@table.Cell() {
+							{ p.City }
+						}
+						@table.Cell() {
+							@badge.Badge(badge.Props{Variant: personStatusVariant(p.Status)}) {
+								{ p.Status }
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+func personStatusVariant(status string) badge.Variant {
+	if status == "active" {
+		return badge.VariantDefault
+	}
+	return badge.VariantSecondary
+}
