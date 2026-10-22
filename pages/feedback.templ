@@ -5,6 +5,7 @@ import (
 	"go-templ-mock-1/components/badge"
 	"go-templ-mock-1/components/button"
 	"go-templ-mock-1/components/card"
+	"go-templ-mock-1/components/icon"
 	"go-templ-mock-1/components/progress"
 	"go-templ-mock-1/components/skeleton"
 	"go-templ-mock-1/components/spinner"
@@ -83,7 +84,56 @@ templ Feedback() {
 				</div>
 			}
 		}
+		@card.Card() {
+			@card.Header() {
+				@card.Title() {
+					Spinners
+				}
+				@card.Description() {
+					The built-in spinner, plus other Lucide icons and Tailwind animations.
+				}
+			}
+			@card.Content() {
+				<div class="flex flex-wrap items-end gap-8">
+					@spinnerDemo("Default") {
+						@spinner.Spinner()
+					}
+					@spinnerDemo("Large, primary") {
+						@spinner.Spinner(spinner.Props{Class: "size-8 text-primary"})
+					}
+					@spinnerDemo("Loader") {
+						@icon.Loader(icon.Props{Class: "size-6 animate-spin", Attributes: spinnerAttrs})
+					}
+					@spinnerDemo("Pinwheel") {
+						@icon.LoaderPinwheel(icon.Props{Class: "size-6 animate-spin", Attributes: spinnerAttrs})
+					}
+					@spinnerDemo("Refresh") {
+						@icon.RefreshCw(icon.Props{Class: "size-6 animate-spin", Attributes: spinnerAttrs})
+					}
+					@spinnerDemo("Pulse") {
+						@icon.LoaderCircle(icon.Props{Class: "size-6 animate-pulse", Attributes: spinnerAttrs})
+					}
+					@spinnerDemo("Bouncing dots") {
+						<span class="flex h-6 items-center gap-1" role="status" aria-label="Loading">
+							<span class="size-2 animate-bounce rounded-full bg-primary [animation-delay:-0.3s]"></span>
+							<span class="size-2 animate-bounce rounded-full bg-primary [animation-delay:-0.15s]"></span>
+							<span class="size-2 animate-bounce rounded-full bg-primary"></span>
+						</span>
+					}
+				</div>
+			}
+		}
 	}
+}
+
+var spinnerAttrs = templ.Attributes{"role": "status", "aria-label": "Loading"}
+
+// spinnerDemo labels one spinner sample.
+templ spinnerDemo(label string) {
+	<div class="flex flex-col items-center gap-2">
+		{ children... }
+		<span class="text-xs text-muted-foreground">{ label }</span>
+	</div>
 }
 
 templ SlowResult(msg string) {
